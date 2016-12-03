@@ -20,19 +20,17 @@ func Get(keys []string, connectionString []string) {
 	table.SetHeader([]string{"Key", "Value", "Expiration"})
 
 	var data [][]string
-	for _, key := range keys {
-		log.Printf("Looking for %s", key)
-		val, err := connection.Get(key)
-		if err != nil {
-			fmt.Printf("Error looking for %s\n %s\n", key, err)
-			continue
-		}
-		value := string(val.Value)
-		expiration := string(val.Expiration)
+	results, err := connection.GetMulti(keys)
+	if err != nil {
+		log.Printf("Error retrieving key", err)
+	}
+	for _, result := range results {
+		value := string(result.Value)
+		key := string(result.Key)
+		expiration := string(result.Expiration)
 		tableRow := []string{key, value, expiration}
 		data = append(data, tableRow)
 	}
-
 	for _, v := range data {
 		table.Append(v)
 
