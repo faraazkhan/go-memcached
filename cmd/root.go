@@ -23,13 +23,14 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var connectionString, host string
-var port int
+var host string
+var connectionString []string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -55,9 +56,7 @@ func Execute() {
 }
 
 func init() {
-	RootCmd.PersistentFlags().IntVar(&port, "port", 11211, "Port to run Application server on")
-	viper.BindPFlag("port", RootCmd.Flags().Lookup("port"))
-	RootCmd.PersistentFlags().StringVar(&host, "host", "127.0.0.1", "host memcached is running on.")
+	RootCmd.PersistentFlags().StringVar(&host, "host", "127.0.0.1:11211", "hosts for your memcached hosts. Accepts an array. Example: --connectionString host1:11211,host2:11211,host3:11211")
 	viper.BindPFlag("host", RootCmd.Flags().Lookup("host"))
-	connectionString = fmt.Sprintf("%s:%v", host, port)
+	connectionString = strings.Split(host, ",")
 }

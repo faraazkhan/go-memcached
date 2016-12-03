@@ -6,10 +6,16 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"log"
 	"os"
+	"strings"
 )
 
-func Get(keys []string, connectionString string) {
-	connection := memcache.New(connectionString)
+func conn(connectionString []string) *memcache.Client {
+	connection := memcache.New(strings.Join(connectionString, ","))
+	return connection
+}
+
+func Get(keys []string, connectionString []string) {
+	connection := conn(connectionString)
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Key", "Value", "Expiration"})
 
@@ -35,8 +41,8 @@ func Get(keys []string, connectionString string) {
 
 }
 
-func Set(key, value string, connectionString string) {
-	connection := memcache.New(connectionString)
+func Set(key, value string, connectionString []string) {
+	connection := conn(connectionString)
 	err := connection.Set(&memcache.Item{Key: key, Value: []byte(value)})
 	if err != nil {
 		fmt.Println("There was an error setting key: ", err)
@@ -45,8 +51,8 @@ func Set(key, value string, connectionString string) {
 	fmt.Printf("%s was set to %s", key, value)
 }
 
-func Flush(keys []string, connectionString string) {
-	connection := memcache.New(connectionString)
+func Flush(keys []string, connectionString []string) {
+	connection := conn(connectionString)
 	for _, key := range keys {
 		if key == "all" {
 			err := connection.DeleteAll()
