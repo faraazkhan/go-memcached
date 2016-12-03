@@ -1,0 +1,8 @@
+package: github.com/faraazkhan/go-memcached
+import:
+- package: github.com/bradfitz/gomemcache
+  subpackages:
+  - memcache
+- package: github.com/olekukonko/tablewriter
+- package: github.com/spf13/cobra
+- package: github.com/spf13/viper
