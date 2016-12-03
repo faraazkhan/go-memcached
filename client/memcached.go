@@ -54,6 +54,8 @@ func Flush(keys []string, connectionString string) {
 				fmt.Println("There was an error deleting keys:", err)
 				return
 			}
+			fmt.Println("Successfully deleted all keys!")
+			return
 		}
 		err := connection.Delete(key)
 		if err != nil {
